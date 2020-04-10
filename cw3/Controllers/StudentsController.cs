@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using cw3.DAL;
@@ -13,12 +14,13 @@ namespace cw3.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly IDbService _dbService;
-/*        [HttpGet]
-        public string GetStudents()
-        {
-            return "Kowalski, Malewski, Andrzejewski";
-        }
-*/
+        private const string ConString = "Data Source=db-mssql;Initial Catalog=s16484;Integrated Security=True";
+        /*        [HttpGet]
+                public string GetStudents()
+                {
+                    return "Kowalski, Malewski, Andrzejewski";
+                }
+        */
         public StudentsController(IDbService dbService)
         {
             _dbService = dbService;
@@ -28,6 +30,10 @@ namespace cw3.Controllers
 
         public IActionResult GetStudent(string orderBy)
         {
+            using (var client = new SqlConnection(ConString))
+            {
+
+            }
             return Ok(_dbService.GetStudents());
         }
 
