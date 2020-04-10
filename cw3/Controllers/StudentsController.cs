@@ -66,6 +66,9 @@ namespace cw3.Controllers
                    + "where s.IdEnrollment = e.IdEnrollment AND e.IdStudy = studies.IdStudy "
                    +"AND indexnumber='"+ id + "'";
 
+                // SQL injetion
+                // localhost:65055/api/students/a';DROP TABLE students;--
+
                 con.Open();
                 var dr = command.ExecuteReader();
                 if (dr.Read())
