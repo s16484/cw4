@@ -48,7 +48,6 @@ namespace cw3.Controllers
                     st.StudyName = dr["Name"].ToString();
                     st.Semester = Int16.Parse(dr["Semester"].ToString());
                     list.Add(st);
-
                 }
 
             }
@@ -56,17 +55,34 @@ namespace cw3.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetStudentDetails(int id)
+        public IActionResult GetStudentDetails(string id)
         {
-            if (id == 1)
+            using (var con = new SqlConnection(ConString))
+            using (var command = new SqlCommand())
             {
-                return Ok("Kowalski");
+                command.Connection = con;
+                command.CommandText = "select IndexNumber, FirstName, LastName, BirthDate, Name, Semester, s.IdEnrollment "
+                   + "from Student s, Enrollment e, Studies studies "
+                   + "where s.IdEnrollment = e.IdEnrollment AND e.IdStudy = studies.IdStudy "
+                   +"AND indexnumber='"+ id + "'";
+
+                con.Open();
+                var dr = command.ExecuteReader();
+                if (dr.Read())
+                {
+                    var st = new Student();
+                    st.FirstName = dr["FirstName"].ToString();
+                    st.LastName = dr["LastName"].ToString();
+                    st.IndexNumber = dr["IndexNumber"].ToString();
+                    st.BirthDate = dr["BirthDate"].ToString();
+                    st.IdEnrollment = Int32.Parse(dr["IdEnrollment"].ToString());
+                    st.StudyName = dr["Name"].ToString();
+                    st.Semester = Int16.Parse(dr["Semester"].ToString());
+                    return Ok(st);
+                }
             }
-            else if (id == 2)
-            {
-                return Ok("Malewski");
-            }
-            return NotFound("Nie znaleziono studenta");
+            return NotFound();
+
         }
 /*
        [HttpGet]
