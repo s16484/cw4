@@ -13,7 +13,7 @@ namespace cw3.Controllers
     [Route("api/students")]
     public class StudentsController : ControllerBase
     {
-        private readonly IDbService _dbService;
+        private  IDbService _dbService;
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s16484;Integrated Security=True";
        
         public StudentsController(IDbService dbService)
@@ -51,9 +51,8 @@ namespace cw3.Controllers
 
                 }
 
-
             }
-            return Ok(_dbService.GetStudents());
+            return Ok(list);
         }
 
         [HttpGet("{id}")]
