@@ -15,12 +15,7 @@ namespace cw3.Controllers
     {
         private readonly IDbService _dbService;
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s16484;Integrated Security=True";
-        /*        [HttpGet]
-                public string GetStudents()
-                {
-                    return "Kowalski, Malewski, Andrzejewski";
-                }
-        */
+       
         public StudentsController(IDbService dbService)
         {
             _dbService = dbService;
@@ -30,8 +25,32 @@ namespace cw3.Controllers
 
         public IActionResult GetStudent(string orderBy)
         {
-            using (var client = new SqlConnection(ConString))
+            var list = new List<Student>();
+
+            using (var con = new SqlConnection(ConString))
+            using (var command = new SqlCommand())
             {
+                command.Connection = con;
+                command.CommandText = "select FirstName, LastName, BirthDate, Name, Semester, IndexNumber, s.IdEnrollment "
+                    + "from Student s, Enrollment e, Studies studies "
+                    + "where s.IdEnrollment = e.IdEnrollment AND e.IdStudy = studies.IdStudy";
+
+                con.Open();
+                var dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    var st = new Student();
+                    st.FirstName = dr["FirstName"].ToString();
+                    st.LastName = dr["LastName"].ToString();
+                    st.IndexNumber = dr["IndexNumber"].ToString();
+                    st.BirthDate = dr["BirthDate"].ToString();
+                    st.IdEnrollment = Int32.Parse(dr["IdEnrollment"].ToString());
+                    st.StudyName = dr["Name"].ToString();
+                    st.Semester = Int16.Parse(dr["Semester"].ToString());
+                    list.Add(st);
+
+                }
+
 
             }
             return Ok(_dbService.GetStudents());
