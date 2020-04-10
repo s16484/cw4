@@ -64,7 +64,8 @@ namespace cw3.Controllers
                 command.CommandText = "select IndexNumber, FirstName, LastName, BirthDate, Name, Semester, s.IdEnrollment "
                    + "from Student s, Enrollment e, Studies studies "
                    + "where s.IdEnrollment = e.IdEnrollment AND e.IdStudy = studies.IdStudy "
-                   +"AND indexnumber='"+ id + "'";
+                   +"AND indexnumber=@id";
+                command.Parameters.AddWithValue("id", id);
 
                 // SQL injetion
                 // localhost:65055/api/students/a';DROP TABLE students;--
